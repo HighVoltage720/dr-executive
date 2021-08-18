@@ -1,33 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 11 14:09:42 2021
-
-@author: KapoSi01
-"""
-#
-#import os 
-#
-#print(os.system("pwd"))
-
-
-#import subprocess
-#
-#useless_cat_call = subprocess.Popen(["cat"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-#output, errors = useless_cat_call.communicate(input="Hello from the other side!")
-#useless_cat_call.wait()
-#print(output)
-#print(errors)
-
-
-#import subprocess
-##
-##useless_cat_call = subprocess.run(["cat"], stdout=subprocess.PIPE, text=True, input="Hello from the other side")
-##print(useless_cat_call.stdout) 
-#
-#
-#list_files = subprocess.run(["ls", "-l"])
-#print(list_files)
-
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.models import DAG
@@ -44,7 +14,7 @@ from pytz import timezone
 tz = timezone('EST')
 
 default_args = {
-    'owner': 'QE/Siddharth',
+    'owner': 'QE',
     'depends_on_past': False,
     'start_date': datetime(2021, 4, 26)
 }
@@ -56,7 +26,6 @@ file_path = "/home/Performance_System_analysis/"
 
 
 with open(file_path + 'config_dr.yaml') as stream:
-#with open('/home/Performance_System_analysis/config_dr.yaml') as stream:
     config_details = yaml.load(stream)
     url = config_details["uptrends"]["url"]
     username = config_details["uptrends"]["username"]
@@ -67,6 +36,7 @@ with open(file_path + 'config_dr.yaml') as stream:
     mysql_server = config_details["sqldb"]["server"]
     mysql_database = config_details["sqldb"]["database"]
     mysql_port = config_details["sqldb"]["port"]
+stream.close()
 
 
 
@@ -108,8 +78,6 @@ def get_status(application_url,production_ip,dr_ip):
 
     print(application_url,ip,production_ip, envt)
     return envt
-    # except Exception as e:
-    #     print("error in get_status at ",e)
 
 
 

@@ -56,14 +56,32 @@ def func_perf_regr_smoke_data_collection_function():
         print("==============================================================")
         print(header)
         print("==============================================================")
+
+
     import yaml
-#    with open('C:\\Users\\KapoSi01\\Documents\\Projects\\Untitled Folder\\config_dr.yaml') as stream:
+
     with open('/home/Performance_System_analysis/config_dr.yaml') as stream:
         config_details = yaml.load(stream)
         ES_ADDRESS = config_details["elk"]["ES_ADDRESS"]
         ES_INDEX = config_details["elk"]["ES_INDEX"]
         ES_USERNAME = config_details["elk"]["ES_USERNAME"]
         ES_PASSWORD = config_details["elk"]["ES_PASSWORD"]
+    
+    # Closing the YAML stream for possible further reuse:
+    print(stream)
+    stream.close()
+
+    # Section to import PASS, FAIL and CANCELLED status items from yaml file
+    with open('elk_test_status_dr.yaml') as stream:
+        config_details = yaml.load(stream)
+        pass_status = config_details["test_status"]["pass_status"]
+        fail_status = config_details["test_status"]["fail_status"]
+        cancel_status = config_details["test_status"]["cancel_status"]
+        skip_status = config_details["test_status"]["skip_status"]
+        
+    # Closing the YAML stream for possible further reuse:
+    print(stream)
+    stream.close()    
 
 
     ########################################## 
@@ -274,7 +292,7 @@ def func_perf_regr_smoke_data_collection_function():
             element_1st_key_value = list_pairs['key']
             print("1st_key_value: ", element_1st_key_value)
 
-            if element_1st_key_value == 'PASS':
+            if element_1st_key_value == pass_status:
                 # PASS and FAIL numbers from bucket:    
                 PASS_key_item = list_pairs
                 print("PASS item: ", PASS_key_item)
@@ -282,14 +300,14 @@ def func_perf_regr_smoke_data_collection_function():
                 print("PASS_key_value: ", PASS_key_value)
                 PASS_key_value_num = int(PASS_key_value['value'])
                 print("PASS_key_value = %d" % PASS_key_value_num)    
-            elif element_1st_key_value == 'FAIL':
+            elif element_1st_key_value == fail_status:
                 FAIL_key_item = list_pairs
                 print("FAIL item: ", FAIL_key_item)
                 FAIL_key_value = FAIL_key_item['1']
                 print("FAIL_key_value: ", FAIL_key_value)
                 FAIL_key_value_num = int(FAIL_key_value['value'])
                 print("FAIL_key_value = %d" % FAIL_key_value_num)
-            elif element_1st_key_value == 'CANCELLED':
+            elif element_1st_key_value == cancel_status:
                 CANCEL_key_item = list_pairs
                 print("CANCEL item: ", CANCEL_key_item)
                 CANCEL_key_value = CANCEL_key_item['1']
@@ -722,7 +740,7 @@ def func_perf_regr_smoke_data_collection_function():
             element_1st_key_value = list_pairs['key']
             print("1st_key_value: ", element_1st_key_value)
 
-            if element_1st_key_value == 'PASS':
+            if element_1st_key_value == pass_status:
                 # PASS and FAIL numbers from bucket:    
                 PASS_key_item = list_pairs
                 print("PASS item: ", PASS_key_item)
@@ -730,14 +748,14 @@ def func_perf_regr_smoke_data_collection_function():
                 print("PASS_key_value: ", PASS_key_value)
                 PASS_key_value_num = int(PASS_key_value['value'])
                 print("PASS_key_value = %d" % PASS_key_value_num)    
-            elif element_1st_key_value == 'FAIL':
+            elif element_1st_key_value == fail_status:
                 FAIL_key_item = list_pairs
                 print("FAIL item: ", FAIL_key_item)
                 FAIL_key_value = FAIL_key_item['1']
                 print("FAIL_key_value: ", FAIL_key_value)
                 FAIL_key_value_num = int(FAIL_key_value['value'])
                 print("FAIL_key_value = %d" % FAIL_key_value_num)
-            elif element_1st_key_value == 'SKIP':
+            elif element_1st_key_value == skip_status:
                 CANCEL_key_item = list_pairs
                 print("SKIP item: ", CANCEL_key_item)
                 CANCEL_key_value = CANCEL_key_item['1']
@@ -951,7 +969,7 @@ def func_perf_regr_smoke_data_collection_function():
             element_1st_key_value = list_pairs['key']
             print("1st_key_value: ", element_1st_key_value)
 
-            if element_1st_key_value == 'PASS':
+            if element_1st_key_value == pass_status:
                 # PASS and FAIL numbers from bucket:    
                 PASS_key_item = list_pairs
                 print("PASS item: ", PASS_key_item)
@@ -959,14 +977,14 @@ def func_perf_regr_smoke_data_collection_function():
                 print("PASS_key_value: ", PASS_key_value)
                 PASS_key_value_num = int(PASS_key_value['value'])
                 print("PASS_key_value = %d" % PASS_key_value_num)    
-            elif element_1st_key_value == 'FAIL':
+            elif element_1st_key_value == fail_status:
                 FAIL_key_item = list_pairs
                 print("FAIL item: ", FAIL_key_item)
                 FAIL_key_value = FAIL_key_item['1']
                 print("FAIL_key_value: ", FAIL_key_value)
                 FAIL_key_value_num = int(FAIL_key_value['value'])
                 print("FAIL_key_value = %d" % FAIL_key_value_num)
-            elif element_1st_key_value == 'CANCELLED':
+            elif element_1st_key_value == cancel_status:
                 CANCEL_key_item = list_pairs
                 print("CANCEL item: ", CANCEL_key_item)
                 CANCEL_key_value = CANCEL_key_item['1']
@@ -1021,7 +1039,10 @@ def func_perf_regr_smoke_data_collection_function():
         mysql_port = config_details["sqldb"]["port"]
     
     conn_string = "mysql+pymysql://" + mysql_id + ":" + mysql_password + "@" + mysql_server + ":" + mysql_port + "/" + mysql_database
-    engine = create_engine(conn_string)
+    
+    from sqlalchemy.pool import NullPool
+    engine = create_engine(conn_string, poolclass = NullPool)
+
     conn = engine.connect()
     func_perf_regr_PASS_results_df.to_sql("dr_elk", conn, if_exists="append", index=False, chunksize=171,
                                           method="multi")
@@ -1059,11 +1080,17 @@ def main_elk(ds, **kwargs):
         mysql_server = config_details["sqldb"]["server"]
         mysql_database = config_details["sqldb"]["database"]
         mysql_port = config_details["sqldb"]["port"]
+
     conn_string = "mysql+pymysql://" + mysql_id + ":" + mysql_password + "@" + mysql_server + ":" + mysql_port + "/" + mysql_database
     engine = create_engine(conn_string)
     conn = engine.connect()
+
     query = "Select * from dr_elk where date = '"+ str(today) +"';"
     df = pd.read_sql(query,conn)
+
+    # Closing the YAML stream for possible further reuse:
+    print(stream)
+    stream.close()
 
     if df.empty:
         conn.close()

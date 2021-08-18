@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov 16 10:47:15 2020
 
-@author: KapoSi01
-"""
 from __future__ import print_function
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
@@ -12,7 +7,6 @@ from airflow.models import DAG
 from sqlalchemy import create_engine
 import json
 
-#from __future__ import print_function
 import time
 import uptrends
 from uptrends.rest import ApiException
@@ -27,13 +21,12 @@ from pytz import timezone
 tz = timezone('EST')
 
 default_args = {
-    'owner': 'QE/Siddharth',
+    'owner': 'QE',
     'depends_on_past': False,
     'start_date': datetime(2021, 4, 26)
 }
 
 
-#with open('C:\\Users\\KapoSi01\\Documents\\Projects\\Untitled Folder\\config_dr.yaml') as stream:
 with open('/home/Performance_System_analysis/config_dr.yaml') as stream:
     config_details = yaml.load(stream)
     url = config_details["uptrends"]["url"]
@@ -45,12 +38,12 @@ with open('/home/Performance_System_analysis/config_dr.yaml') as stream:
     mysql_server = config_details["sqldb"]["server"]
     mysql_database = config_details["sqldb"]["database"]
     mysql_port = config_details["sqldb"]["port"]
+stream.close()
 
 def get_data_status(url,method_url,guid,length,past_days,authentication):
     headers = { "Accept": "application/json"}
     # Execute the request
     baseUrl = url
-#     response = requests.get('https://api.uptrends.com/v4/Alert/Monitor/cd5864a4-72c1-45a4-bf40-9c62d89c8f9f?IncludeReminders=false&Sorting=Descending&Take=100&PresetPeriod=Last24Hours', auth=authentication, headers = headers)
     response = requests.get(baseUrl + method_url+"/" + guid + "?" + "Take=" + length + "&PresetPeriod=" + past_days, auth=authentication, headers = headers)
     # Convert the response into string data, which will contain JSON content
     byteData = response.json()
