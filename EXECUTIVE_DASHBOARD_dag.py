@@ -72,7 +72,11 @@ def func_perf_regr_smoke_data_collection_function():
     stream.close()
 
     # Section to import PASS, FAIL and CANCELLED status items from yaml file
+<<<<<<< HEAD
     with open('/home/Performance_System_analysis/elk_test_status_dr.yaml') as stream:
+=======
+    with open('elk_test_status_dr.yaml') as stream:
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
         config_details = yaml.load(stream)
         pass_status = config_details["test_status"]["pass_status"]
         fail_status = config_details["test_status"]["fail_status"]

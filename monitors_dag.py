@@ -23,7 +23,11 @@ tz = timezone('EST')
 default_args = {
     'owner': 'QE',
     'depends_on_past': False,
+<<<<<<< HEAD
     'start_date': datetime(2021, 10, 26)
+=======
+    'start_date': datetime(2021, 4, 26)
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
 }
 
 
@@ -44,7 +48,11 @@ def get_data_status(url,method_url,guid,length,past_days,authentication):
     headers = { "Accept": "application/json"}
     # Execute the request
     baseUrl = url
+<<<<<<< HEAD
     response = requests.get(baseUrl + method_url+"/" + guid + "?" + "Take=" + length + "&PresetPeriod=" + past_days, auth=authentication, headers = headers, verify = False)
+=======
+    response = requests.get(baseUrl + method_url+"/" + guid + "?" + "Take=" + length + "&PresetPeriod=" + past_days, auth=authentication, headers = headers)
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
     # Convert the response into string data, which will contain JSON content
     byteData = response.json()
     return byteData
@@ -53,7 +61,11 @@ def get_data(url,method_url,authentication):
     headers = { "Accept": "application/json" }
     # Execute the request
     baseUrl = url
+<<<<<<< HEAD
     response = requests.get(baseUrl + method_url, auth=authentication, headers = headers, verify = False)
+=======
+    response = requests.get(baseUrl + method_url, auth=authentication, headers = headers)
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
     # Convert the response into string data, which will contain JSON content
     byteData = response.json()
     return byteData
@@ -137,7 +149,11 @@ def run_data(day_type):
                 print("error in ",name)
         df_data = pd.concat(ls)
         df_data["error"] = df_data.apply(lambda x: 1 if x.Alerts > 0 else 0, axis =1)
+<<<<<<< HEAD
         df_data["environment_name"] = df_data.apply(lambda x: env_name(x.FullName), axis =1)
+=======
+        df_data["environment_name"] = df_data.apply(lambda x: env_name(x.FullName), axis =1) 
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
         conn_string = "mysql+pymysql://" + mysql_id + ":" + mysql_password + "@" + mysql_server+ ":" + mysql_port + "/" + mysql_database
         engine = create_engine(conn_string)
         conn = engine.connect()
@@ -164,7 +180,11 @@ def run_dag(ds, **kwargs):
         df_today = pd.read_sql(query_todaydata,conn)
         df_yesterday = pd.read_sql(query_yesterdaydata,conn)
 
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
         if df_today.empty and df_yesterday.empty:
             ## add new data
             run_data("CurrentDay")
@@ -173,7 +193,11 @@ def run_dag(ds, **kwargs):
             conn.close()
             engine.dispose()
         elif not df_today.empty and not df_yesterday.empty:
+<<<<<<< HEAD
             ## yesterday data is not empty and today data is not empty
+=======
+            ## yesterday data is not empty and today data is not empty 
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
             ## delete todays data and re fetch today's data
             string = "Delete from DR_uptrends_daily where date = '" + str(today) + "';"
             qry = text(string)
@@ -183,7 +207,11 @@ def run_dag(ds, **kwargs):
             run_data("CurrentDay")
             print("today data is updated")
         elif  df_today.empty and not df_yesterday.empty:
+<<<<<<< HEAD
             ## yesterday data is not empty and today data is empty
+=======
+            ## yesterday data is not empty and today data is empty 
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
             ## delete yesterday data and re fetch yesterday's data and fetch fresh today's data
             string = "Delete from DR_uptrends_daily where date = '" + str(new_date) + "';"
             qry = text(string)
@@ -194,7 +222,11 @@ def run_dag(ds, **kwargs):
             run_data("PreviousDay")
             print("yesterday data is deleted and updated and todays data is updated")
         elif not df_today.empty and df_yesterday.empty:
+<<<<<<< HEAD
             ## yesterday data is empty and today data is not empty
+=======
+            ## yesterday data is empty and today data is not empty 
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
             ## delete today's data and fetch yesterday's data and fetch fresh today's data
             string = "Delete from DR_uptrends_daily where date = '" + str(today) + "';"
             qry = text(string)
@@ -205,6 +237,7 @@ def run_dag(ds, **kwargs):
             run_data("PreviousDay")
             print("got yesterday data")
         else:
+<<<<<<< HEAD
             print("nothing is updated")
             conn.close()
             engine.dispose()
@@ -212,6 +245,15 @@ def run_dag(ds, **kwargs):
     except:
         print("error in run_dag")
 
+=======
+            print("nothing is updated") 
+            conn.close()
+            engine.dispose()
+            
+    except:
+        print("error in run_dag")
+    
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
 
 
 dag = DAG(dag_id='DR_uptrends_daily_1', default_args=default_args,schedule_interval='20 * * * *')
@@ -227,3 +269,8 @@ end_task = DummyOperator(task_id = 'end',  trigger_rule = 'all_done', dag = dag)
 
 start_task.set_downstream(start_get_uptrends)
 start_get_uptrends.set_downstream(end_task)
+<<<<<<< HEAD
+=======
+        
+
+>>>>>>> 52deabdbc4af81d9ea318ab5ced98ee8b7a2f099
