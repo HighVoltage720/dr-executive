@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: DR Executive Dashboard
+  description: Dashboard to provide visibility into health of DR systems
+  annotations:
+    github.com/project-slug: github.com/HighVoltage720/dr-executive
+    backstage.io/techdocs-ref: dir:.
+  tags:
+    - dashboard
+    - performance data
+    - smoke tests
+    - uptrends
+    - failovers
+  links:
+    - url: https://app.powerbi.com/groups/97a27b6e-cd58-4762-b5b5-a382470751ac/reports/dc10a283-7849-4e0e-8315-92f95ba361ed/ReportSection?experience=power-bi
+      title: Dashboard
+      icon: dashboard
+spec:
+  type: dashboard
+  lifecycle: production
+  owner: Risk
+  system: internal
