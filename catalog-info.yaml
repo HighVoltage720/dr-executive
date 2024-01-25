@@ -1,15 +1,15 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: DR Executive Dashboard
+  name: DR-Executive-Dashboard
   description: Dashboard to provide visibility into health of DR systems
   annotations:
     github.com/project-slug: github.com/HighVoltage720/dr-executive
     backstage.io/techdocs-ref: dir:.
   tags:
     - dashboard
-    - performance data
-    - smoke tests
+    - performance-data
+    - smoke-tests
     - uptrends
     - failovers
   links:
